@@ -21,10 +21,30 @@ export default function CustomerSignup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Call API
-        console.log('Registering customer:', formData);
-        alert('Customer registered successfully (Mock)');
-        router.push('/customer');
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/customer-service/customers`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: `${formData.firstName} ${formData.lastName}`,
+                    email: formData.email,
+                    tenantId: formData.tenantId
+                })
+            });
+
+            if (response.ok) {
+                alert('Customer registered successfully!');
+                router.push('/customer');
+            } else {
+                alert('Failed to register customer. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error registering customer:', error);
+            alert('Error registering customer. Please check if backend services are running.');
+        }
     };
 
     return (

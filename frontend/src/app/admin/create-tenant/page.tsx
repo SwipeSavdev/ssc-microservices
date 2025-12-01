@@ -20,12 +20,26 @@ export default function CreateTenant() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Call API
-        console.log('Creating tenant:', formData);
-        // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants`, { method: 'POST', body: JSON.stringify(formData) });
 
-        alert('Tenant created successfully (Mock)');
-        router.push('/admin');
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenant-service/tenants`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                alert('Tenant created successfully!');
+                router.push('/admin');
+            } else {
+                alert('Failed to create tenant. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error creating tenant:', error);
+            alert('Error creating tenant. Please check if backend services are running.');
+        }
     };
 
     return (
